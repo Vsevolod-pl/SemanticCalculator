@@ -140,9 +140,8 @@ class Bot:
         self.updater.start_polling()
         self.updater.idle()
 
-
+#insert your token here
 bot = Bot('TOKEN')
 
-
+print("Starting bot")
 bot.start_polling()
-
