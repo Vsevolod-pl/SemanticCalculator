@@ -9,6 +9,12 @@ from telegram.ext import Updater, MessageHandler, CommandHandler, Filters
 
 
 def get_synonyms(word, model="tayga_upos_skipgram_300_2_2019"):
+    """
+    Uses rusvectores.org API to find synonyms to specified word
+    :param word: string containing 1 word
+    :param model: name of model
+    :return: dict from synonyms to distances, or None
+    """
     url = "https://rusvectores.org/"+model+"/"+word+"/api/json"
     res = requests.get(url).text
     ans = json.loads(res)
@@ -17,6 +23,13 @@ def get_synonyms(word, model="tayga_upos_skipgram_300_2_2019"):
 
 
 def get_distance(word1, word2, model="tayga_upos_skipgram_300_2_2019"):
+    """
+    Uses rusvectores.org API to calculate distance between two words
+    :param word1: string containing first word
+    :param word2: string containing second word
+    :param model: name of model
+    :return: float distance
+    """
     url = '/'.join(['https://rusvectores.org', model, word1 + '__' + word2, 'api', 'similarity/'])
     res = requests.get(url).text.split()[0]
     try:
@@ -26,6 +39,13 @@ def get_distance(word1, word2, model="tayga_upos_skipgram_300_2_2019"):
 
 
 def calculate(pos, neg, model="geowac_lemmas_none_fasttextskipgram_300_5_2020"):
+    """
+    Makes POST request to https://rusvectores.org/ru/calculator/# and parses it
+    :param pos: string with words with positive sign
+    :param neg: string with words with negative sign
+    :param model: name of model
+    :return: dict from synonyms to distances
+    """
     r = requests.post("https://rusvectores.org/ru/calculator/", data={
         "positive1": pos, 
         "negative1": neg,
@@ -42,6 +62,10 @@ def calculate(pos, neg, model="geowac_lemmas_none_fasttextskipgram_300_5_2020"):
 
 class Bot:
     def __init__(self, token):
+        """
+        Creates Semantic Bot from token
+        :param token: string token
+        """
         self.updater = Updater(token)
         self.command = ""
         self.show_distances = False
